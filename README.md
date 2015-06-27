@@ -4,6 +4,8 @@
 
 [Regular Expressions](regex.md)
 
+[Structs and Pointers](structs_pointers.md)
+
 ### io.Pipe
 
 ```go
@@ -22,36 +24,6 @@ b, _ := ioutil.ReadAll(rp)
 return fmt.Sprintf("%s", b)
 ```
 
-## Pointers
-```go
-
-type X struct {}
-
-x := X{}
-y := &x
-z := *y
-
-fmt.Println(x == z) // true
-```
-
-Now the inverse:
-
-```go
-
-type A struct {}
-
-a := &A{}
-b := *a
-c := &b
-
-fmt.Println(c == a) // true
-```
-
-When using `fmt.Printf("%T", thing)`, pay attention to the prefix of the type. In the second case, this will print:
-
-```go
-*main.A
-```
 
 ## Strings
 ---
@@ -62,6 +34,8 @@ import "strings"
 line := "     what's with all the extra whitepsace     "
 line = strings.Trim(line, " ")
 ```
+
+## Slices and Maps
 
 ### indexOf
 
@@ -83,8 +57,6 @@ func indexOf(list interface{}, elem interface{}) int {
 
 TIP: If you're "indexing" stuff that needs to be unique but need not be in order, it's faster to just stash them into a hash.
 
-## Slices and Maps
----
 ### hasKey
 The typical ("correct") way:
 
@@ -311,38 +283,6 @@ filename := image.Name()
 filesize := image.Size()
 ```
 
-## Structs
-
-These forms are equivalent:
-
-```go
-s := new(X)
-t := &X{}
-
-fmt.Printf("%T", s) // *main.X
-fmt.Printf("%T", t) // *main.X
-
-```
-
-But these are *not*:
-
-```go
-var a X
-b := new(X)
-
-fmt.Printf("%T", a) // main.X -- A concrete value
-fmt.Printf("%T", b) // *main.X -- A pointer
-```
-
-When you make a "concrete" declaration (without a pointer), you cannot leave fields empty!
-
-```go
-
-p3 := Person{id:2}  // Compile ERROR
-
-p3 := &Person{id:2} // OK, name defaults to empty string
-
-```
 
 
 ## Closures
