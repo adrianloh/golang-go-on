@@ -6,7 +6,11 @@
 
 [Structs and Pointers](structs_pointers.md)
 
-[IO](io.md)
+[File IO](io.md)
+
+[Crypto](crypto.md)
+
+[Time and Timing](timing.md)
 
 ### io.Pipe
 
@@ -62,21 +66,6 @@ func putInClipboard(str string) error {
 }
 ```
 
-## Crypto
----
-### SHA1 the fast way
-```go
-import "crypto/sha1"
-
-sha1.Sum([]byte("Hello World))
-```
-
-### From a stream
-```go
-h := sha1.New()
-h.Write([]byte("Good Golly"))
-h.Write([]byte("Miss Molly"))
-checksum := fmt.Sprintf("%x", h.Sum(nil))
 
 ```
 
@@ -171,37 +160,3 @@ Outputs:
 */ 
 ```
 
-## Timing
----
-### Elapsed
-```go
-
-start := time.Now()
-time.Sleep(time.Second)
-fmt.Printf("Completed in %s\n", time.Since(start))
-```
-
-### Execution time of function
-
-Within the body of a function, defer the `timeTrack` function
-
-```go
-
-import "runtime"
-import "reflect"
-
-func timeTrack(start time.Time, name string) {
-    elapsed := time.Since(start)
-    log.Printf("%s took %s", name, elapsed)
-}
-
-func funcName() string {
-    pc, _, _, _ := runtime.Caller(1)
-    return runtime.FuncForPC(pc).Name()
-}
-
-func funcToTrack() {
-	defer timeTrack(time.Now(), funcName())
-	// Do shit
-}
-```
