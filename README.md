@@ -6,7 +6,11 @@
 
 [Structs and Pointers](structs_pointers.md)
 
-[File IO](io.md)
+[Slices and Maps](slices_maps.md)
+
+[Strings and Numbers](strings_ints.md)
+
+[File IO](file_io.md)
 
 [Time and Timing](timing.md)
 
