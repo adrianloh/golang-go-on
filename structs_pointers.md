@@ -53,11 +53,12 @@ fmt.Printf("%T", t) // *main.X
 But these are *not*:
 
 ```go
-var a X
-b := new(X)
 
-fmt.Printf("%T", a) // main.X -- A concrete value
-fmt.Printf("%T", b) // *main.X -- A pointer
+a := new(X)
+var b X
+
+fmt.Printf("%T", a) // *main.X -- A pointer
+fmt.Printf("%T", b) //  main.X -- A concrete value
 ```
 
 When you make a "concrete" declaration, you cannot leave fields empty!
@@ -65,14 +66,15 @@ When you make a "concrete" declaration, you cannot leave fields empty!
 ```go
 
 type Z struct {
-	a int
-	b string
+	a string
+	b int
 }
 
+z := Z{a:"hello world"}  // Compile ERROR, you must also initialize `b`
 
-p3 := Z{a:2}  // Compile ERROR
+z := &Z{a:"hello world"} // OK
 
-p3 := &Z{a:2} // OK, p3.b is == ""
+fmt.Println(z.b) //=> 0 #The zero-value of `int` type
 
 ```
 

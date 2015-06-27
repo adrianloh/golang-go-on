@@ -1,41 +1,59 @@
 ## Regular Expressions
----
+
 To compile a regex
 
 ```go
+
+import "regexp"
+
 re_compiled, err := regexp.Compile(`201[234]`)
 ```
 
-This annoyingly also returns an `err`, which we often don't need. 
+This annoyingly also returns an `err`, so we can't declare multiple regexes in a `var` block. 
 
-So instead use:
+Instead we can use:
 
 ```go
-re_compiled := regexp.MustCompile(`201[234]`)
+
+import "regexp"
+
+var(
+	re_compiled_1 = regexp.MustCompile(`1234`)
+	re_compiled_2 = regexp.MustCompile(`5678`)
+)
 ```
 
 ### search/match
+
+Check if the *compiled* regex matches a string:
+
 ```go
-re_compiled := regexp.MustCompile(`201[234]`)
+
+line := "hello world"
+
 if re_compiled.MatchString(line) {
 	// Do stuff
 }
 ```
-Alternatively, if you don't need/want to precompile the regex
+
+Alternatively, to match a non-precompiled regex against a string:
 
 ```go
+
 import "regexp"
 
 line := "hello world"
+
 if m, _ := regexp.MatchString(`hello`, line); m {
-	// Do something if matches
+	// Do stuff
 }
 
 ```
 
 ### re.findAll
 ```go
-match := re_compiled.FindAllStringSubmatch(line, -1)
+match := re_compiled.FindAllStringSubmatch(line, -1) // `-1` means "match multiple"
+
 if match != nil {
 	m := match[0] // You can treat this as you would Python's
 	substring := m[0]
@@ -43,6 +61,7 @@ if match != nil {
 	captureGroup2 := m[2]
 }
 ```
+
 If there are no capture groups, the matched substring is `match[0][0]`
 
 If there are capture groups, then matched groups are `match[0][1:]`
