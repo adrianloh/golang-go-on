@@ -6,6 +6,8 @@
 
 [Structs and Pointers](structs_pointers.md)
 
+[IO](io.md)
+
 ### io.Pipe
 
 ```go
@@ -25,175 +27,8 @@ return fmt.Sprintf("%s", b)
 ```
 
 
-## Strings
----
-### strip
-```go
-import "strings"
-
-line := "     what's with all the extra whitepsace     "
-line = strings.Trim(line, " ")
-```
-
-## Slices and Maps
-
-### indexOf
-
-Because we're not doing anything with the elements, we don't have too much headache using `reflect` and `interface{}`. So here's a generic implementation:
-
-```go
-import "reflect"
-
-func indexOf(list interface{}, elem interface{}) int {
-	v := reflect.ValueOf(list)
-	for i := 0; i < v.Len(); i++ {
-		if v.Index(i).Interface() == elem {
-			return i
-		}
-	}
-	return -1
-}
-```
-
-TIP: If you're "indexing" stuff that needs to be unique but need not be in order, it's faster to just stash them into a hash.
-
-### hasKey
-The typical ("correct") way:
-
-```go
-val, hasKey = o[key]
-if hasKey {
-	// Do something to val
-}
-```
-
-Like structs, missing keys are mapped to the zero-value of the declared type of values:
-
-```go
-h := &map[string]int{}
-
-h["someKeyThatDoesNotExist"] //=> 0 #Because The zero value of type `int` is 0
-```
-
-The zero-value of `bool` is `false` and we can use maps to index an unordered list:
-
-```go
-h := map[string]bool{}
-
-h["aa"] = true
-h["bb"] = true
-
-if !h["cc"] {
-	// "cc" is not in h
-}
-```
-
-Crazily enough, you can use arbitrary stuff as keys, even structs!
-
-```go
-type Hero struct {
-	name string
-}
-
-avengers := &map[Hero]int{}
-
-ironman := Hero{"Ironman"}
-hulk := Hero{"Hulk"}
-gadget := Hero{"Inspector Gadget"}
-
-avengers[ironman] := 1
-avengers[hulk] := 1
-
-fmt.Printf("%v", avengers[ironman]) //=> 1
-fmt.Printf("%v", avengers[gadget])  //=> 0
-```
 
 
-
-
-## IO
----
-### Write to file
-
-```go
-
-p := "/path/to/a/file"
-
-fd, _ := os.Create(p)
-fd.WriteString("Hello World\n")
-fd.Close()
-
-// If you're appending (assuming) -- pay attention to the flag
-
-fd, _ = os.OpenFile(p, os.O_RDWR|os.O_APPEND, 0666)
-fd.WriteString("Hello Again\n")
-fd.Close()
-
-data, _ := ioutil.ReadFile(p)
-fmt.Println(string(data))
-
-/* outputs:
-	Hello World
-	Hello Again
-*/
-
-```
-
-### For each file in directory
-
-```go
-files, _ := ioutil.ReadDir(folderPath)
-for _, fileInfo := range files {
-	// Do something with each file
-}
-```
-
-### Is this a directory or file?
-With an `os.FileInfo` object:
-
-```go
-if fileInfo.Mode().isDir() {
-	// Is a direcotry
-}
-
-if fileInfo.Mode().IsRegular() {
-	// Is a file
-}
-```
-
-### Existence
-Like *node.js*, just use Stat
-
-```go
-fileInfo, err := os.Stat(pathToFile)
-if err!=nil {
-	// The file does not exists
-}
-```
-
-### For each line of file
-```go
-f,_ := os.Open(timecodes)
-scan := bufio.NewScanner(f)
-for scan.Scan() {
-	line := scan.Text()
-}
-```
-
-### Read entire file
-```go
-import "io/ioutil"
-
-data, err := ioutil.ReadFile(checkPointFile)
-```
-
-### Dump to file
-```go
-import "io/ioutil"
-
-data := []byte(theStringToDump)
-err := ioutil.WriteFile(pathToFile, data, 0644)
-```
 
 ## Subprocess
 ---
@@ -254,7 +89,7 @@ func getImageInfo(pathToImage string) image.Config {
 }
 
 fullPath := "/home/acme/image.jpg"
-fileInfo := os.Stat(fullPath) 	 // type is os.FileInfo
+fileInfo := os.Stat(fullPath)	 // type is os.FileInfo
 imgInfo := getImageInfo(fullPath) // type is image.Config
 ```
 
