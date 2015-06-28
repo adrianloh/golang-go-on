@@ -12,6 +12,8 @@
 
 [File IO](file_io.md)
 
+[io.Reader and io.Writer](io_wtf.md)
+
 [Time and Timing](timing.md)
 
 [Crypto](crypto.md)
