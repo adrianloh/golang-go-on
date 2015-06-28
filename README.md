@@ -18,6 +18,9 @@
 
 [Crypto](crypto.md)
 
+[HTTP and JSON](http_json.md)
+
 [Subprocess](subprocess.md)
 
 [Misc](misc.md)
+
