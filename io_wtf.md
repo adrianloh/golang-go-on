@@ -84,16 +84,41 @@ dst.Write(buff)
 
 ```
 
+### Using io.Pipe to open a file >> zip it >> base64 encode it >> transmit it
 
+Now for something slightly more involved, we're gonna build a pipeline that looks something like this:
 
+```
+file | wgzip | wbase64 | wpipe | rpipe | http
+```
 
+In Go, it's best to think of it *backwards*.
 
+```go
 
+// `rp` is the final part of the pipeline. We "start the engine" when we start reading from `rp`
 
+rp, wp := io.Pipe()
 
+// pipe writer -> pipe reader -> http
+req, _ := http.NewRequest("PUT", "http://some/api/upload", rp)
 
+// base64-encoded data -> pipe writer
+wb64 := base64.NewEncoder(base64.StdEncoding, wp)
 
+// gzipped data -> base64 encoder
+wgzip, _ := gzip.NewWriterLevel(wb64, gzip.BestCompression)
 
+// `io.Copy` is a blocking operation. To jumpstart the pipeline, we have to execute
+// the http request at the top *from all the way at the bottom*
+go func() {
+	f, _ := os.Open(path)
+	io.Copy(wgzip, f) // "raw" data from file -> gzip encoder
+	f.Close()
+	wgz.Close()
+	wb64.Close()
+	wp.Close()
+}()
 
-
-
+resp, err := (&http.Client{}).Do(req)
+```

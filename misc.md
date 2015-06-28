@@ -1,21 +1,3 @@
-### io.Pipe
-
-```go
-rp, wp := io.Pipe()
-wb64 := base64.NewEncoder(base64.StdEncoding, wp)
-wgz, _ := gzip.NewWriterLevel(wb64, gzip.BestCompression)
-go func() {
-	f, _ := os.Open(path)
-	io.Copy(wgz, f)
-	wgz.Close()
-	wb64.Close()
-	wp.Close()
-	f.Close()
-}()
-b, _ := ioutil.ReadAll(rp)
-return fmt.Sprintf("%s", b)
-```
-
 ### Inheritance
 ```go
 func getImageInfo(pathToImage string) image.Config {
