@@ -20,6 +20,24 @@ response, _ := http.Get("http://some/image/on/the/web.jpg")
 io.Copy(file, response.Body)
 ```
 
+### Functions that deal with streams of stuff
+
+Most of Go's function that do i/o are implemented as Readers/Writers.
+
+Whereas in Python you would (kinda) say `base64.encode(data)` or `json.loads(string)`, in Go, you think of them like this...
+
+Let's take `base64.NewEncoder`. The function doesn't say "base64 encode some data". What it says is, "give me a base64 encoder I can write data into". It returns an `io.Writer`.
+
+But before it can give you a "base64 writer", obviously, you have to give it a place to write the encoded data into. So you have to give it an `io.Writer`.
+
+```go
+buff := &bytes.Buffer{} // A place for the "base64 writer" to write to
+
+base64_writer := base64.NewEncoder(base64.StdEncoding, buff)
+
+io.Copy(base64_writer, dataReader) // Where dataReader can be any `io.Reader`
+```
+
 ### So wtf does it mean to implement io.Reader/io.Writer?
 
 It just means the struct has methods named Read/Write. That's it.
@@ -49,11 +67,9 @@ func (self *Z) Write(b []byte) (n int, err error) {
 Now we can plug `Z` into `io.Copy`, same as before:
 
 ```go
-
 z := &Z{}
 response, _ := http.Get("http://some/image/on/the/web.jpg")
 io.Copy(z, response.Body)
-
 ```
 
 Now let's get `Z` to implement `io.Reader`, and have it return a single string. And have its `Write` method print out whatever it received.
@@ -71,17 +87,15 @@ func (self *Z) Read(b []byte) (n int, err error) {
 
 src := &Z{}
 dst := &Z{}
-io.Copy(w, r) // => Go fuck yourself
+io.Copy(dst, src) // => Go fuck yourself
 ```
 
 Under the hood, `io.Copy` does something like this:
 
 ```go
-
-buff := make([]byte, 1024)
+buff := make([]byte, maxBuffLength)
 src.Read(buff)
 dst.Write(buff)
-
 ```
 
 ### Using io.Pipe to open a file >> zip it >> base64 encode it >> transmit it
@@ -92,11 +106,11 @@ Now for something slightly more involved, we're gonna build a pipeline that look
 file | wgzip | wbase64 | wpipe | rpipe | http
 ```
 
-In Go, it's best to think of it *backwards*.
+Sometimes it helps to think of pipes *in reverse* -- start with the thing that comes out last and work your way down to the thing that goes in first.
 
 ```go
 
-// `rp` is the final part of the pipeline. We "start the engine" when we start reading from `rp`
+// The "last" thing is "transmit". `http.NewRequest` needs something to read from.
 
 rp, wp := io.Pipe()
 
@@ -109,7 +123,7 @@ wb64 := base64.NewEncoder(base64.StdEncoding, wp)
 // gzipped data -> base64 encoder
 wgzip, _ := gzip.NewWriterLevel(wb64, gzip.BestCompression)
 
-// `io.Copy` is a blocking operation. To jumpstart the pipeline, we have to execute
+// `io.Copy` blocks but to get the ball rolling, we have to execute
 // the http request at the top *from all the way at the bottom*
 go func() {
 	f, _ := os.Open(path)
@@ -122,3 +136,5 @@ go func() {
 
 resp, err := (&http.Client{}).Do(req)
 ```
+
+
