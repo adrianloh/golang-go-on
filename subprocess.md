@@ -85,6 +85,7 @@ http GET video | ffmpeg | file on disk
 ```
 
 We need three things:
+
 1. A subprocess of `ffmpeg` that reads from STDIN and writes to STDOUT
 2. http.GET of some video and pipe it into ffmpeg's STDIN
 3. Create a file on disk and write from ffmpeg's STDOUT into it
