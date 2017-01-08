@@ -30,6 +30,7 @@ response, err := (&http.Client{}).Do(req)
 `curl -X GET https://www.funnybunny.com/path?param1=123&param2=456`
 
 ```go
+
 import (
 	"net/http"
 	"net/url"
@@ -55,6 +56,12 @@ response, err := (&http.Client{}).Do(req)
 
 ```go
 
+import (
+    "bytes"
+    "encoding/json"
+    "net/http"
+)
+
 jsonPayload := &struct {
 	ApiKey string `json:"api_key"`
 }{"12345"}
@@ -78,6 +85,11 @@ Same as before, except:
 
 ```go
 
+import (
+    "net/http"
+    "net/url"
+)
+
 params := url.Values{}
 params.Set("param1", "123")
 params.Set("param2", "456")
@@ -91,6 +103,16 @@ response, err := http.PostForm("https://www.funnybunny.com/path", params)
 `curl -X POST -H "Content-Type: application/json" -d '{"api_key":123}' https://www.funnybunny.com/path`
 
 ```go
+
+import (
+    "bytes"
+    "encoding/json"
+    "net/http"
+)
+
+jsonPayload := &struct {
+	ApiKey string `json:"api_key"`
+}{"12345"}
 
 b, _ := json.Marshal(jsonPayload)
 

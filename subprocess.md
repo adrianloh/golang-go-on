@@ -27,6 +27,18 @@ fmt.Println(string(stdout)) //=> Hello World
 
 ### Read STDERR
 
+You can also simply redirect the command's STDOUT/STDERR to `os.Stdout` or `os.Stderr` respectively.
+
+```go
+
+mov := "/path/to/video.mp4"
+ffmpeg := exec.Command("ffmpeg", "-i", mov)
+
+ffmpeg.Stdout = os.Stdout
+ffmpeg.Stderr = os.Stdout
+
+```
+
 Command's STDIN/STDOUT/STDERR are implemented as Readers/Writers so you can pipe them around.
 
 ```go
@@ -43,18 +55,6 @@ io.Copy(buff, stderrPipe)
 ffmpeg.Wait()
 
 fmt.Println(buff.String())
-
-```
-
-You can also simply redirect the command's STDOUT/STDERR to `os.Stdout` or `os.Stderr` respectively.
-
-```go
-
-mov := "/path/to/video.mp4"
-ffmpeg := exec.Command("ffmpeg", "-i", mov)
-
-ffmpeg.Stdout = os.Stdout
-ffmpeg.Stderr = os.Stderr
 
 ```
 
