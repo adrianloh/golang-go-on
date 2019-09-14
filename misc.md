@@ -1,58 +1,14 @@
-### Timers
-Example of a ticker that increments `i` every second, and a second timer that resets it every 10 seconds.
+### Path to Executable
 
 ```go
-tickerInsert := time.NewTicker(1 * time.Second).C
-tickerFlush := time.NewTicker(10 * time.Second).C
-i := 0
-for {
-	select {
-	case <-tickerInsert:
-		i += 1
-		fmt.Println(i)
-	case <-tickerFlush:
-		i = 0
-	}
-}
-```
+import (
+	"os"
+	"path/filepath"
+)
 
-### Inheritance
-Structs can "inherit" fields and methods from other structs:
+exe, _ := os.Executable()
+dir := filepath.Dir(exe)
 
-```go
-// A function that gets info on some image
-func getImageInfo(pathToImage string) image.Config {
-	file, _ := os.Open(pathToImage)
-	imgInfo, _, _ := image.DecodeConfig(file)
-	return imgInfo
-}
-
-fullPath := "/home/acme/image.jpg"
-fileInfo := os.Stat(fullPath) // type is os.FileInfo
-imgInfo := getImageInfo(fullPath) // type is image.Config
-```
-
-Now define a struct that "inherits" properties from both "classes"
-
-```go
-type SuperImage struct {
-	fullpath string
-	os.FileInfo
-	image.Config
-}
-```
-
-Fields/methods "inherited" from the two "classes" are directly callable from SuperImage
-
-```go
-image := SuperImage{fullPath, fileInfo, imgInfo}
-
-// width and height are fields of image.Config
-width, height := image.width, image.height
-
-// Name() and Size() are methods of os.FileInfo
-filename := image.Name()
-filesize := image.Size()
 ```
 
 ### Returning functions

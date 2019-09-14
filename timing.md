@@ -1,4 +1,26 @@
-## Time and Timing
+## Time
+
+### Timers and Timeouts
+
+A ticker that increments `i` every second, and a second timer that resets it every 10 seconds. Finally, a timeout that breaks the loop after 30 seconds.
+
+```go
+tickerInsert := time.Tick(1 * time.Second)
+tickerFlush := time.Tick(10 * time.Second)
+timeout := time.After(30 * time.Second)
+
+i := 0
+for {
+    select {
+        case <-timeout:
+	        break
+        case <-tickerInsert:
+    	    i += 1
+        case <-tickerFlush:
+	        i = 0
+    }
+}
+```
 
 ### Now, Format
 

@@ -1,4 +1,4 @@
-## Structs and Pointers
+## Pointers
 
 Some basic math:
 

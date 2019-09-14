@@ -1,4 +1,26 @@
-## http and JSON
+### http.Server
+
+The simplest server:
+
+```go
+import (
+	"context"
+	"net/http"
+)
+
+h := &http.Server{Addr: ":1234"}
+http.HandleFunc("/_ping", func(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(jsonResponse)
+})
+go h.ListenAndServe()
+h.Shutdown(context.TODO())
+
+```
+
+
+
+### http and JSON
 
 To inspect `http.Request` and `http.Response` objects, use `net/http/httputil`
 

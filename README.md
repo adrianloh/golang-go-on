@@ -4,7 +4,9 @@
 
 [Regular Expressions](regex.md)
 
-[Structs and Pointers](structs_pointers.md)
+[Pointers](pointers.md)
+
+[Structs, Types and Inheritance](structs_inheritance.md)
 
 [Slices and Maps](slices_maps.md)
 
@@ -14,7 +16,7 @@
 
 [io.Reader and io.Writer](io_wtf.md)
 
-[Time and Timing](timing.md)
+[Time](timing.md)
 
 [Crypto](crypto.md)
 
